@@ -3,13 +3,356 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Music Player</title>
+    <title>Uzi Leaks Music Player</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 800px;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .player {
+            padding: 30px;
+        }
+
+        .audio-player {
+            margin-bottom: 30px;
+        }
+
+        audio {
+            width: 100%;
+            margin-bottom: 15px;
+            outline: none;
+        }
+
+        .now-playing {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .now-playing h3 {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .now-playing p {
+            font-size: 18px;
+            color: #333;
+            font-weight: 600;
+            word-break: break-word;
+        }
+
+        .playlist {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+        }
+
+        .playlist-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .playlist-item:hover {
+            background: #f9f9f9;
+        }
+
+        .playlist-item.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .playlist-item .track-number {
+            min-width: 30px;
+            font-weight: 600;
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        .playlist-item .track-name {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: #fee;
+            color: #c33;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #c33;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .track-count {
+            font-size: 12px;
+            color: #999;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .player {
+                padding: 20px;
+            }
+
+            .playlist {
+                max-height: 300px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to the Music Player</h1>
-    <audio controls>
-        <source src="music.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
+    <div class="container">
+        <div class="header">
+            <h1>🎵 Uzi Leaks</h1>
+            <p>Dynamic Music Player</p>
+        </div>
+
+        <div class="player">
+            <div id="loading" class="loading">
+                <div class="spinner"></div>
+                <p>Loading music files...</p>
+            </div>
+
+            <div id="playerContent" style="display: none;">
+                <div class="audio-player">
+                    <audio id="audioPlayer" controls preload="metadata"></audio>
+                </div>
+
+                <div class="now-playing">
+                    <h3>Now Playing</h3>
+                    <p id="nowPlayingTitle">Select a track</p>
+                </div>
+
+                <div class="controls">
+                    <button onclick="previousTrack()">⏮️ Previous</button>
+                    <button onclick="nextTrack()">Next ⏭️</button>
+                    <button onclick="shufflePlaylist()">🔀 Shuffle</button>
+                </div>
+
+                <div class="playlist" id="playlistContainer"></div>
+
+                <div class="track-count" id="trackCount"></div>
+            </div>
+
+            <div id="error" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        const GITHUB_API = 'https://api.github.com/repos/ph4xus/UziLeaks/contents';
+        const audioPlayer = document.getElementById('audioPlayer');
+        const playlistContainer = document.getElementById('playlistContainer');
+        const nowPlayingTitle = document.getElementById('nowPlayingTitle');
+        const loading = document.getElementById('loading');
+        const playerContent = document.getElementById('playerContent');
+        const error = document.getElementById('error');
+        const trackCount = document.getElementById('trackCount');
+
+        let playlist = [];
+        let currentTrackIndex = 0;
+
+        // Fetch all MP3 files from repository
+        async function loadMusicFiles() {
+            try {
+                loading.style.display = 'block';
+                playerContent.style.display = 'none';
+                error.style.display = 'none';
+
+                const response = await fetch(GITHUB_API);
+                if (!response.ok) throw new Error('Failed to fetch repository contents');
+
+                const files = await response.json();
+                
+                // Filter only MP3 files
+                playlist = files
+                    .filter(file => file.name.endsWith('.mp3'))
+                    .sort((a, b) => a.name.localeCompare(b.name));
+
+                if (playlist.length === 0) {
+                    throw new Error('No MP3 files found in repository');
+                }
+
+                // Populate playlist UI
+                renderPlaylist();
+                
+                // Load first track
+                loadTrack(0);
+                
+                loading.style.display = 'none';
+                playerContent.style.display = 'block';
+                trackCount.textContent = `Total tracks: ${playlist.length}`;
+
+            } catch (err) {
+                loading.style.display = 'none';
+                error.style.display = 'block';
+                error.innerHTML = `<strong>Error:</strong> ${err.message}`;
+                console.error('Error loading music files:', err);
+            }
+        }
+
+        function renderPlaylist() {
+            playlistContainer.innerHTML = '';
+            playlist.forEach((track, index) => {
+                const trackElement = document.createElement('div');
+                trackElement.className = `playlist-item ${index === currentTrackIndex ? 'active' : ''}`;
+                trackElement.innerHTML = `
+                    <span class="track-number">${index + 1}</span>
+                    <span class="track-name">${track.name.replace('.mp3', '')}</span>
+                `;
+                trackElement.onclick = () => loadTrack(index);
+                playlistContainer.appendChild(trackElement);
+            });
+        }
+
+        function loadTrack(index) {
+            currentTrackIndex = index;
+            const track = playlist[index];
+            
+            // Use raw GitHub URL for audio
+            audioPlayer.src = `https://github.com/${track.url.split('https://api.github.com/repos/')[1]}/raw`;
+            nowPlayingTitle.textContent = track.name.replace('.mp3', '');
+            
+            // Update active state in playlist
+            document.querySelectorAll('.playlist-item').forEach((item, i) => {
+                item.classList.toggle('active', i === index);
+            });
+
+            audioPlayer.play().catch(err => console.log('Playback error:', err));
+        }
+
+        // Get raw content URL from file object
+        function getRawUrl(file) {
+            // Convert API URL to raw URL
+            if (file.download_url) {
+                return file.download_url;
+            }
+            return `https://raw.githubusercontent.com/ph4xus/UziLeaks/main/${encodeURIComponent(file.name)}`;
+        }
+
+        function nextTrack() {
+            currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
+            loadTrack(currentTrackIndex);
+        }
+
+        function previousTrack() {
+            currentTrackIndex = (currentTrackIndex - 1 + playlist.length) % playlist.length;
+            loadTrack(currentTrackIndex);
+        }
+
+        function shufflePlaylist() {
+            for (let i = playlist.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [playlist[i], playlist[j]] = [playlist[j], playlist[i]];
+            }
+            renderPlaylist();
+            loadTrack(0);
+        }
+
+        // Auto-play next track when current finishes
+        audioPlayer.addEventListener('ended', nextTrack);
+
+        // Load music files on page load
+        window.addEventListener('DOMContentLoaded', loadMusicFiles);
+    </script>
 </body>
 </html>
