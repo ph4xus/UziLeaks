@@ -2,314 +2,198 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Uzi Leaks Music Player</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Uzi Leaks</title>
     <style>
+        :root {
+            --bg: #000000;
+            --text: #ffffff;
+            --border: #ffffff;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
             display: flex;
             justify-content: center;
-            align-items: center;
-            padding: 20px;
+            min-height: 100vh;
+            padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom) 0;
         }
 
         .container {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             width: 100%;
-            max-width: 600px;
-            padding: 40px;
-            backdrop-filter: blur(10px);
+            max-width: 500px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
         }
 
         .header {
-            text-align: center;
-            margin-bottom: 30px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
         }
 
         .header h1 {
-            color: #333;
-            margin-bottom: 5px;
-            font-size: 28px;
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: -1px;
         }
 
         .header p {
-            color: #888;
-            font-size: 14px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.5;
         }
 
         .player-section {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 25px;
-            color: white;
-        }
-
-        .now-playing {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            padding: 20px;
             margin-bottom: 20px;
-            text-align: center;
+            position: sticky;
+            top: 10px;
+            z-index: 10;
         }
 
         .now-playing-title {
-            font-size: 16px;
-            opacity: 0.8;
-            margin-bottom: 8px;
+            font-size: 9px;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            margin-bottom: 4px;
+            opacity: 0.6;
         }
 
         .now-playing-name {
-            font-size: 22px;
-            font-weight: bold;
-            word-break: break-word;
-            max-height: 60px;
+            font-size: 18px;
+            font-weight: 600;
+            white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            margin-bottom: 15px;
         }
 
         audio {
             width: 100%;
-            margin-bottom: 20px;
             height: 40px;
-            border-radius: 8px;
+            margin-bottom: 20px;
         }
 
         .controls {
-            display: flex;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
             gap: 10px;
-            justify-content: center;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
         }
 
         button {
-            background: rgba(255, 255, 255, 0.2);
-            border: 2px solid white;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            transition: all 0.3s ease;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 14px;
+            font-size: 11px;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        button:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
+            cursor: pointer;
+            -webkit-appearance: none;
+            border-radius: 0;
         }
 
         button:active {
-            transform: translateY(0);
-        }
-
-        button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .progress-info {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            opacity: 0.8;
-            margin-top: 10px;
-        }
-
-        .playlist-section {
-            margin-top: 25px;
+            background: var(--text);
+            color: var(--bg);
         }
 
         .playlist-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
+            padding: 0 5px;
         }
 
         .playlist-header h2 {
-            color: #333;
-            font-size: 18px;
+            font-size: 12px;
+            text-transform: uppercase;
         }
 
         .track-count {
-            background: #667eea;
-            color: white;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .playlist {
-            max-height: 400px;
-            overflow-y: auto;
-            border: 1px solid #e0e0e0;
-            border-radius: 10px;
-            background: #f9f9f9;
-        }
-
-        .track-item {
-            padding: 12px 15px;
-            border-bottom: 1px solid #e0e0e0;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: #333;
-        }
-
-        .track-item:last-child {
-            border-bottom: none;
-        }
-
-        .track-item:hover {
-            background: #f0f0f0;
-            padding-left: 20px;
-        }
-
-        .track-item.active {
-            background: #667eea;
-            color: white;
-            font-weight: 600;
-        }
-
-        .track-number {
-            min-width: 30px;
-            text-align: center;
-            font-size: 12px;
+            font-size: 10px;
             opacity: 0.6;
         }
 
+        .playlist {
+            border-top: 1px solid var(--border);
+        }
+
+        .track-item {
+            padding: 18px 10px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .track-item.active {
+            background-color: #ffffff;
+            color: #000000;
+        }
+
+        .track-number {
+            font-size: 10px;
+            margin-right: 15px;
+            width: 20px;
+            font-family: monospace;
+        }
+
         .track-name {
-            flex: 1;
-            word-break: break-word;
             font-size: 14px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            flex: 1;
         }
 
         .loading {
-            text-align: center;
             padding: 40px;
-            color: #888;
-        }
-
-        .spinner {
-            display: inline-block;
-            width: 30px;
-            height: 30px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #667eea;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .error {
-            background: #fee;
-            color: #c33;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            border-left: 4px solid #c33;
-        }
-
-        .playlist::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .playlist::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
-
-        .playlist::-webkit-scrollbar-thumb {
-            background: #667eea;
-            border-radius: 10px;
-        }
-
-        .playlist::-webkit-scrollbar-thumb:hover {
-            background: #764ba2;
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 20px;
-            }
-
-            .header h1 {
-                font-size: 22px;
-            }
-
-            .now-playing-name {
-                font-size: 18px;
-            }
-
-            .controls {
-                gap: 8px;
-            }
-
-            button {
-                padding: 8px 15px;
-                font-size: 12px;
-            }
+            text-align: center;
+            font-size: 11px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎵 Uzi Leaks</h1>
-            <p>Auto-loading Music Player</p>
+            <h1>UZI LEAKS</h1>
+            <p>DARK ARCHIVE v2.1</p>
         </div>
 
         <div id="error-container"></div>
 
         <div class="player-section">
-            <div class="now-playing">
-                <div class="now-playing-title">Now Playing</div>
-                <div class="now-playing-name" id="current-track">Select a track</div>
-            </div>
+            <div class="now-playing-title">Current File</div>
+            <div class="now-playing-name" id="current-track">SELECT TRACK</div>
 
-            <audio id="audio-player" controls>
-                Your browser does not support the audio element.
+            <audio id="audio-player" controls playsinline>
+                Your browser is not supported.
             </audio>
 
             <div class="controls">
-                <button id="prev-btn" onclick="previousTrack()">⏮️ Previous</button>
-                <button id="play-btn" onclick="togglePlay()">▶️ Play</button>
-                <button id="next-btn" onclick="nextTrack()">Next ⏭️</button>
-            </div>
-
-            <div class="progress-info">
-                <span id="current-time">0:00</span>
-                <span id="duration">0:00</span>
+                <button onclick="previousTrack()">BACK</button>
+                <button id="play-btn" onclick="togglePlay()">PLAY</button>
+                <button onclick="nextTrack()">NEXT</button>
             </div>
         </div>
 
         <div class="playlist-section">
             <div class="playlist-header">
-                <h2>Playlist</h2>
-                <div class="track-count" id="track-count">0 tracks</div>
+                <h2>FILES</h2>
+                <div id="track-count" class="track-count">0 ITEMS</div>
             </div>
             <div class="playlist" id="playlist"></div>
         </div>
@@ -326,136 +210,109 @@
         const playlistContainer = document.getElementById('playlist');
         const currentTrackDisplay = document.getElementById('current-track');
         const trackCountDisplay = document.getElementById('track-count');
-        const errorContainer = document.getElementById('error-container');
+        const playBtn = document.getElementById('play-btn');
 
-        // Format time helper
-        function formatTime(seconds) {
-            if (isNaN(seconds)) return '0:00';
-            const mins = Math.floor(seconds / 60);
-            const secs = Math.floor(seconds % 60);
-            return `${mins}:${secs.toString().padStart(2, '0')}`;
-        }
-
-        // Load tracks from GitHub API
         async function loadTracks() {
             try {
-                playlistContainer.innerHTML = '<div class="loading"><div class="spinner"></div><p>Loading tracks...</p></div>';
-                
+                playlistContainer.innerHTML = '<div class="loading">SYNCING ARCHIVE...</div>';
                 const response = await fetch(GITHUB_API);
-                if (!response.ok) throw new Error('Failed to fetch repository contents');
-                
                 const contents = await response.json();
                 
-                // Filter only MP3 files and sort alphabetically
                 tracks = contents
                     .filter(item => item.type === 'file' && item.name.toLowerCase().endsWith('.mp3'))
                     .sort((a, b) => a.name.localeCompare(b.name))
                     .map(item => ({
                         name: item.name.replace('.mp3', ''),
-                        url: item.download_url,
-                        fullName: item.name
+                        url: item.download_url
                     }));
 
-                if (tracks.length === 0) {
-                    showError('No MP3 files found in the repository');
-                    playlistContainer.innerHTML = '<div class="loading">No tracks available</div>';
-                    return;
+                if (tracks.length > 0) {
+                    renderPlaylist();
+                    loadTrack(0, false);
+                    setupMediaSession();
+                } else {
+                    playlistContainer.innerHTML = '<div class="loading">NO FILES FOUND.</div>';
                 }
-
-                renderPlaylist();
-                loadTrack(0);
-            } catch (error) {
-                showError(`Error loading tracks: ${error.message}`);
-                console.error('Error:', error);
+            } catch (e) {
+                playlistContainer.innerHTML = '<div class="loading">CONNECTION ERROR.</div>';
             }
         }
 
-        // Render playlist
         function renderPlaylist() {
             playlistContainer.innerHTML = '';
-            trackCountDisplay.textContent = `${tracks.length} track${tracks.length !== 1 ? 's' : ''}`;
+            trackCountDisplay.textContent = `${tracks.length} ITEMS`;
 
             tracks.forEach((track, index) => {
                 const trackElement = document.createElement('div');
                 trackElement.className = `track-item ${index === currentTrackIndex ? 'active' : ''}`;
                 trackElement.innerHTML = `
-                    <div class="track-number">${index + 1}</div>
+                    <div class="track-number">${(index + 1).toString().padStart(2, '0')}</div>
                     <div class="track-name">${track.name}</div>
                 `;
-                trackElement.onclick = () => loadTrack(index);
+                trackElement.onclick = () => loadTrack(index, true);
                 playlistContainer.appendChild(trackElement);
             });
         }
 
-        // Load a track
-        function loadTrack(index) {
-            if (index < 0 || index >= tracks.length) return;
-            
+        function loadTrack(index, autoPlay) {
             currentTrackIndex = index;
             const track = tracks[index];
-            
             audioPlayer.src = track.url;
             currentTrackDisplay.textContent = track.name;
+            // Set a new title
+            document.title = track.name;
             
-            // Update active state in playlist
-            document.querySelectorAll('.track-item').forEach((item, i) => {
-                item.classList.toggle('active', i === index);
-            });
+            // Highlight current in UI
+            const items = document.querySelectorAll('.track-item');
+            items.forEach((item, i) => item.classList.toggle('active', i === index));
 
-            // Auto-scroll to active track
-            const activeTrack = document.querySelectorAll('.track-item')[index];
-            if (activeTrack) {
-                activeTrack.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            updateMediaMetadata(track);
+
+            if (autoPlay) {
+                audioPlayer.play().catch(() => console.log("User must interact first"));
             }
         }
 
-        // Playback controls
         function togglePlay() {
-            if (audioPlayer.paused) {
-                audioPlayer.play();
-                document.getElementById('play-btn').textContent = '⏸️ Pause';
-            } else {
-                audioPlayer.pause();
-                document.getElementById('play-btn').textContent = '▶️ Play';
-            }
+            if (audioPlayer.paused) audioPlayer.play();
+            else audioPlayer.pause();
         }
 
         function nextTrack() {
-            loadTrack((currentTrackIndex + 1) % tracks.length);
-            audioPlayer.play();
-            document.getElementById('play-btn').textContent = '⏸️ Pause';
+            loadTrack((currentTrackIndex + 1) % tracks.length, true);
         }
 
         function previousTrack() {
-            loadTrack((currentTrackIndex - 1 + tracks.length) % tracks.length);
-            audioPlayer.play();
-            document.getElementById('play-btn').textContent = '⏸️ Pause';
+            loadTrack((currentTrackIndex - 1 + tracks.length) % tracks.length, true);
         }
 
-        // Update time display
-        audioPlayer.addEventListener('timeupdate', () => {
-            document.getElementById('current-time').textContent = formatTime(audioPlayer.currentTime);
-            document.getElementById('duration').textContent = formatTime(audioPlayer.duration);
-        });
+        // --- iOS Lockscreen & Control Center Sync ---
+        function setupMediaSession() {
+            if ('mediaSession' in navigator) {
+                navigator.mediaSession.setActionHandler('play', () => audioPlayer.play());
+                navigator.mediaSession.setActionHandler('pause', () => audioPlayer.pause());
+                navigator.mediaSession.setActionHandler('previoustrack', () => previousTrack());
+                navigator.mediaSession.setActionHandler('nexttrack', () => nextTrack());
+            }
+        }
 
-        // Auto play next track
+        function updateMediaMetadata(track) {
+            if ('mediaSession' in navigator) {
+                navigator.mediaSession.metadata = new MediaMetadata({
+                    title: track.name,
+                    artist: 'Lil Uzi Vert',
+                    album: '16*67',
+                    artwork: [
+                        { src: 'data:image/jpeg;base64,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', sizes: '255x255', type: 'image/jpeg' }
+                    ]
+                });
+            }
+        }
+
+        audioPlayer.addEventListener('play', () => playBtn.textContent = 'PAUSE');
+        audioPlayer.addEventListener('pause', () => playBtn.textContent = 'PLAY');
         audioPlayer.addEventListener('ended', nextTrack);
 
-        // Update play button state
-        audioPlayer.addEventListener('play', () => {
-            document.getElementById('play-btn').textContent = '⏸️ Pause';
-        });
-
-        audioPlayer.addEventListener('pause', () => {
-            document.getElementById('play-btn').textContent = '▶️ Play';
-        });
-
-        // Show error message
-        function showError(message) {
-            errorContainer.innerHTML = `<div class="error">${message}</div>`;
-        }
-
-        // Initialize on page load
         window.addEventListener('load', loadTracks);
     </script>
 </body>
